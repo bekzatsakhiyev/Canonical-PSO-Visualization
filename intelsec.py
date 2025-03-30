@@ -6,19 +6,13 @@ from mesa.visualization.ModularVisualization import ModularServer
 from mesa.batchrunner import RandomActivation
 import random
 import numpy as np
-
-# ----- Параметры PSO -----
 NUM_PARTICLES = 50
 INERTIA = 0.7
 C1 = 1.5
 C2 = 1.5
 WIDTH, HEIGHT = 50, 50
-
-# ----- Функция оптимизации -----
 def objective_function(x, y):
     return (x - 25) ** 2 + (y - 25) ** 2
-
-# ----- Класс частицы -----
 class Particle(Agent):
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
@@ -35,16 +29,12 @@ class Particle(Agent):
             + C2 * r2 * (self.model.gbest - self.pos)
         )
         self.pos += self.velocity
-
         new_value = objective_function(*self.pos)
         if new_value < self.pbest_value:
             self.pbest = self.pos.copy()
             self.pbest_value = new_value
-
     def get_position(self):
         return int(self.pos[0]), int(self.pos[1])
-
-# ----- Класс модели -----
 class PSOModel(Model):
     def __init__(self, num_particles):
         self.num_particles = num_particles
@@ -54,12 +44,9 @@ class PSOModel(Model):
         for particle in self.particles:
             self.schedule.add(particle)
         self.gbest = min(self.particles, key=lambda p: p.pbest_value).pbest
-
     def step(self):
         self.schedule.step()
         self.gbest = min(self.particles, key=lambda p: p.pbest_value).pbest
-
-# ----- Визуализация -----
 def agent_portrayal(agent):
     return {"Shape": "circle", "r": 2, "Color": "blue", "Filled": "true", "Layer": 1}
 
